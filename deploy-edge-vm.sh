@@ -61,4 +61,4 @@ az vm extension set \
   --vm-name exttest \
   --name customScript \
   --publisher Microsoft.Azure.Extensions \
-  --protected-settings "{\"fileUris\": [\"https://raw.githubusercontent.com/Microsoft/dotnet-core-sample-templates/master/dotnet-core-music-linux/scripts/config-music.sh\"],\"commandToExecute\": \"sudo bash config-edge.sh $SCOPEID $DEVICEID $SASKEY\"}"
+  --protected-settings "{\"fileUris\": [\"https://raw.githubusercontent.com/ms-us-rcg-app-innovation/iot-central-edge-deploy/main/iot-edge-config-bash.sh\"],\"commandToExecute\": \"sudo bash iot-edge-config-bash.sh $SCOPEID $DEVICEID $SASKEY\"}"
