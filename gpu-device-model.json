@@ -1,0 +1,119 @@
+[
+  {
+    "@id": "dtmi:com:azuremedia:model:GpuEdgeDevice;1",
+    "@type": "Interface",
+    "contents": [
+      {
+        "@id": "dtmi:com:azuremedia:model:GpuEdgeDevice:GpuSpatialEdgeModule;1",
+        "@type": [
+          "Relationship",
+          "EdgeModule"
+        ],
+        "displayName": {
+          "en": "GPU Edge Gateway Module"
+        },
+        "maxMultiplicity": 1,
+        "name": "GpuSpatialEdgeModule",
+        "target": [
+          "dtmi:bodIotCentral01:GpuSpatialEdgeModule;1"
+        ]
+      },
+      {
+        "@id": "dtmi:com:azuremedia:model:GpuEdgeDevice:rtspCameraFeed;1",
+        "@type": [
+          "Relationship",
+          "GatewayDevice"
+        ],
+        "displayName": {
+          "en": "rtspCameraFeed"
+        },
+        "name": "rtspCameraFeed",
+        "target": []
+      }
+    ],
+    "displayName": {
+      "en": "GPU Edge Gateway Model"
+    },
+    "@context": [
+      "dtmi:iotcentral:context;2",
+      "dtmi:dtdl:context;2"
+    ]
+  },
+  {
+    "@id": "dtmi:bodIotCentral01:GpuSpatialEdgeModule;1",
+    "@type": "Interface",
+    "contents": [],
+    "extends": [
+      "dtmi:com:azuremedia:GpuEdgeDeviceModule:SpatialAnalysisInterface;1"
+    ],
+    "@context": [
+      "dtmi:iotcentral:context;2",
+      "dtmi:dtdl:context;2"
+    ]
+  },
+  {
+    "@context": [
+      "dtmi:iotcentral:context;2",
+      "dtmi:dtdl:context;2"
+    ],
+    "@id": "dtmi:com:azuremedia:GpuEdgeDeviceModule:SpatialAnalysisInterface;1",
+    "@type": [
+      "Interface",
+      "NamedInterface"
+    ],
+    "contents": [
+      {
+        "@type": "Telemetry",
+        "displayName": {
+          "en": "Spatial Event Type"
+        },
+        "name": "spatialEvent",
+        "schema": "string"
+      },
+      {
+        "@type": "Telemetry",
+        "displayName": {
+          "en": "Event Status"
+        },
+        "name": "eventStatus",
+        "schema": "string"
+      },
+      {
+        "@type": "Telemetry",
+        "displayName": {
+          "en": "Detection Type"
+        },
+        "name": "detectionType",
+        "schema": "string"
+      },
+      {
+        "@type": "Telemetry",
+        "displayName": {
+          "en": "Detection Point"
+        },
+        "name": "detectionPoint",
+        "schema": "vector"
+      },
+      {
+        "@type": "Telemetry",
+        "displayName": {
+          "en": "Confidence"
+        },
+        "name": "confidence",
+        "schema": "long"
+      },
+      {
+        "@type": "Telemetry",
+        "displayName": {
+          "en": "Timestamp"
+        },
+        "name": "timestamp",
+        "schema": "string"
+      }
+    ],
+    "displayName": {
+      "en": "Spatial Analysis Interface"
+    },
+    "name": "Spatial Analysis"
+  }
+]

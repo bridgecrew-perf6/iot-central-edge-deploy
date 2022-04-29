@@ -1,0 +1,181 @@
+{
+    "modulesContent": {
+        "$edgeAgent": {
+            "properties.desired": {
+                "modules": {
+                    "spatialanalysis": {
+                        "version": "1.0",
+                        "type": "docker",
+                        "status": "running",
+                        "restartPolicy": "always",
+                        "settings": {
+                          "image": "mcr.microsoft.com/azure-cognitive-services/vision/spatial-analysis:latest",
+                          "createOptions": "{\"HostConfig\":{\"PortBindings\":{\"50051/tcp\":[{\"HostPort\":\"50051\"}]},\"Binds\":[\"/tmp/.X11-unix:/tmp/.X11-unix\"],\"Runtime\":\"nvidia\",\"ShmSize\":536870911,\"LogConfig\":{\"Type\":\"json-file\",\"Config\":{\"max-size\":\"100m\",\"max-file\":\"2000\"}}}}"
+                        },
+                        "env": {
+                            "DISPLAY": {
+                                "value": ":1"
+                            },
+                            "QT_X11_NO_MITSHM": {
+                                "value": "1"
+                            },
+                            "ARCHON_LOG_LEVEL": {
+                                "value": "info"
+                            },
+                            "ARCHON_SHARED_BUFFER_LIMIT": {
+                                "value": "377487360"
+                            },
+                            "OMP_WAIT_POLICY": {
+                                "value": "PASSIVE"
+                            },
+                            "EULA": {
+                                "value": "accept"
+                            },
+
+                          "BILLING": {
+                            "value": "<COMPUTER VISION URL>"
+                          },
+                          "APIKEY": {
+                            "value": "<CONPUTER VISION KEY>"
+                          },
+                          "ARCHON_GRAPH_READY_TIMEOUT":{
+                            "value": "600"
+                        },
+                        "ORT_TENSORRT_ENGINE_CACHE_ENABLE":{
+                            "value": "0"
+                        }
+                        }
+                    },
+                    "diagnostics": {
+                        "settings": {
+                            "image": "mcr.microsoft.com/azure-cognitive-services/vision/spatial-analysis/diagnostics:latest",
+                            "createOptions": "{\"HostConfig\": {\"Binds\": [\"/var/run/docker.sock:/var/run/docker.sock\",\"/usr/bin/docker:/usr/bin/docker\"],\"LogConfig\": {\"Config\": {\"max-size\": \"500m\"}}}}"
+                        },
+                        "type": "docker",
+                        "env": {
+                            "LOGANALYTICS_WORKSPACE_ID": {
+                                "value": "<LOG ANALYTICS ID>"
+                            },
+                            "LOGANALYTICS_SHAREDKEY": {
+                                "value": "<KEY"
+                            },
+                            "IOTEDGE_WORKLOADURI": {
+                                "value": "fd://iotedge.socket"
+                            },
+                            "ARCHON_LOG_LEVEL": {
+                                "value": "info"
+                            },
+                            "LOG_COLOR": {
+                                "value": "false"
+                            }
+                        },
+                        "status": "running",
+                        "restartPolicy": "always",
+                        "version": "1.0"
+                    }   
+                },
+                "runtime": {
+                    "settings": {
+                        "minDockerVersion": "v1.25"
+                    },
+                    "type": "docker"
+                },
+                "schemaVersion": "1.0",
+                "systemModules": {
+                    "edgeAgent": {
+                        "settings": {
+                            "image": "mcr.microsoft.com/azureiotedge-agent:1.1",
+                            "createOptions": "{}"
+                        },
+                        "type": "docker"
+                    },
+                    "edgeHub": {
+                        "settings": {
+                            "image": "mcr.microsoft.com/azureiotedge-hub:1.1",
+                            "createOptions": "{ \"HostConfig\": { \"PortBindings\": { \"5671/tcp\": [ { \"HostPort\": \"5671\" } ], \"8883/tcp\": [ { \"HostPort\": \"8883\" } ], \"443/tcp\": [ { \"HostPort\": \"443\" } ] } } }"
+                        },
+                        "type": "docker",
+                        "env": {
+                            "UpstreamProtocol": {
+                                "value": "AMQPWS"
+                            }
+                        },
+                        "status": "running",
+                        "restartPolicy": "always"
+                    }
+                }
+            }
+        },
+        "$edgeHub": {
+            "properties.desired": {
+                "routes": {
+                    "AVAToHub": "FROM /messages/* INTO $upstream"
+                },
+                "schemaVersion": "1.0",
+                "storeAndForwardConfiguration": {
+                    "timeToLiveSecs": 7200
+                }
+            }
+        },
+        "rtspsim": {
+            "properties.desired": {}
+        },
+        "spatialanalysis": {
+            "properties.desired": {
+                "logLevel": "Information",
+                "LogCategories": "Application,Events,MediaPipeline",
+                "globalSettings": {
+                    "PlatformTelemetryEnabled": false,
+                    "CustomerTelemetryEnabled": true
+                },
+                "graphs": {
+                    "cognitiveservices_vision_spatialanalysis_1": {
+                        "operationId": "cognitiveservices.vision.spatialanalysis",
+                        "parameters": {
+                            "INPUT_VIDEO_WIDTH": 1920
+                        },
+                        "sharedNodes": {
+                            "sharedDetector": {
+                                "node": "SpatialAnalysisGraph/detector",
+                                "parameters": {
+                                    "DETECTOR_NODE_CONFIG": "{\"gpu_index\":0}"
+                                }
+                            },
+                            "sharedFacemask": {
+                                "node": "SpatialAnalysisGraph/facemask",
+                                "parameters": {
+                                    "VIDEO_DECODE_GPU_INDEX": 0,
+                                    "ENABLE_FACE_MASK_CLASSIFIER": true
+                                }
+                            },
+                            "sharedCalibrator": {
+                                "node": "SpatialAnalysisGraph/cameracalibrator",
+                                "parameters": {
+                                    "CAMERACALIBRATOR_NODE_CONFIG": "{ \"gpu_index\": 0, \"do_calibration\": true}"
+                                }
+                            }
+                        },
+                        "instances": {
+                            "storeEntrance": {
+                                "sharedNodeMap": {
+                                    "SpatialAnalysisGraph/detector": "sharedDetector",
+                                    "SpatialAnalysisGraph/facemask": "sharedFacemask",
+                                    "SpatialAnalysisGraph/cameracalibrator": "sharedCalibrator"
+                                },
+                                "parameters": {
+                                    "VIDEO_URL": "https://teamfileshare.blob.core.windows.net/spatialanalysis-demo-data/line-crossing.mp4?sp=r&st=2021-04-26T22:53:17Z&se=2024-04-27T06:53:17Z&spr=https&sv=2020-02-10&sr=b&sig=sfy4Z%2BQPnMnL2wqA5F0Mw0VVGIoqHG1vtr0IhvhqCuI%3D",
+                                    "VIDEO_SOURCE_ID": "Store Entrance",
+                                    "VIDEO_IS_LIVE": false,
+                                    "VIDEO_DECODE_GPU_INDEX": 0,
+                                    "SPACEANALYTICS_CONFIG": "{\"lines\": [{\"name\": \"Line 1\",\"line\":{\"start\":{\"x\":0.839,\"y\":0.367},\"end\":{\"x\":0.925,\"y\":0.428}},\"events\": [{\"type\": \"linecrossing\",\"config\": {\"trigger\": \"event\",\"focus\": \"footprint\",\"threshold\": 16}}]}]}"
+                                },
+                                "enabled": false
+                            }
+                        },
+                        "enabled": true
+                    }
+                }
+            }
+        }
+    }
+}

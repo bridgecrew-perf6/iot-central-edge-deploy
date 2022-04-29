@@ -10,7 +10,7 @@ Help()
    echo "-sid     Scope ID"
    echo "-did     Device or Registration ID"
    echo "-key     Symmetric Key"
-   echo "-ar      Azure Region (optional / default EUS2)"    
+   echo "-ar      Azure Region (optional / default WUS2)"    
    echo "-rg      Resource Group Name (optional)"
    echo "-vmname  Name of new VM (optional)"
    echo "-vnet    Existing VNET to deploy into (optional)"
@@ -52,7 +52,7 @@ if [ -z "$DEVICEID" ]; then Help exit; fi
 if [ -z "$SASKEY" ]; then Help exit; fi
 
 if [ -z "$REGION" ]; then 
-    REGION="eus2"
+    REGION="westus2"
 fi
 
 if [ -z "$RESOURCEGROUP" ]; then 
@@ -65,18 +65,26 @@ fi
 
 
 #create resource group
-if [ $(az group exists --name $RESOURCEGROUP) = false ]; then
-    az group create --name $RESOURCEGROUP --location $REGION
-fi
+# if [ $(az group exists --name $RESOURCEGROUP) = false ]; then
+#     az group create --name $RESOURCEGROUP --location $REGION
+# fi
+az group create --name $RESOURCEGROUP --location $REGION
 
 echo $RESOURCEGROUP
 if [ -z "$VNET" ]; then
-    echo "az vm create --resource-group $RESOURCEGROUP --name $VMNAME --image Canonical:0001-com-ubuntu-server-focal:20_04-lts-gen2:latest --size Standard_DS2_v2  --admin-username azureuser --generate-ssh-keys"
-    az vm create --resource-group $RESOURCEGROUP --name $VMNAME --image Canonical:0001-com-ubuntu-server-focal:20_04-lts-gen2:latest --size Standard_DS2_v2  --admin-username azureuser --generate-ssh-keys
+    echo "az vm create --resource-group $RESOURCEGROUP --name $VMNAME --image Canonical:0001-com-ubuntu-server-focal:20_04-lts-gen2:latest --size Standard_NC6_Promo  --admin-username azureuser --generate-ssh-keys"
+    az vm create --resource-group $RESOURCEGROUP --name $VMNAME --image Canonical:0001-com-ubuntu-server-focal:20_04-lts-gen1:latest --size Standard_NC6_Promo  --admin-username azureuser --generate-ssh-keys
 else
     echo "az vm create --resource-group $RESOURCEGROUP --name $VMNAME --vnet-name $VNET --image Canonical:0001-com-ubuntu-server-focal:20_04-lts-gen2:latest --size Standard_DS2_v2  --admin-username azureuser --generate-ssh-keys"
     az vm create --resource-group $RESOURCEGROUP --name $VMNAME --vnet-name $VNET --subnet $SUBNET --image Canonical:0001-com-ubuntu-server-focal:20_04-lts-gen2:latest --size Standard_DS2_v2  --admin-username azureuser --generate-ssh-keys
 fi
+az vm extension set \
+  --resource-group myResourceGroup \
+  --vm-name myVM \
+  --name NvidiaGpuDriverLinux \
+  --publisher Microsoft.HpcCompute \
+  --version 1.6
+
 az vm extension set \
   --resource-group $RESOURCEGROUP \
   --vm-name $VMNAME \
