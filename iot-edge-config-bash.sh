@@ -38,7 +38,7 @@ echo "Set DPS provisioning parameters."
 
 FILE_NAME="/etc/iotedge/config.yaml"
 # create a config.toml - will replace existing
-echo 'hostname = "'`hostname`'"' > $FILE_NAME
+echo 'hostname: "'`hostname`'"' >> $FILE_NAME
 echo '' >> $FILE_NAME
 echo '## DPS provisioning with symmetric key' >> $FILE_NAME
 echo 'provisioning:' >> $FILE_NAME
@@ -64,7 +64,6 @@ echo '  config:' >> $FILE_NAME
 echo '    image: "mcr.microsoft.com/azureiotedge-agent:1.1"' >> $FILE_NAME
 echo '    auth: {}' >> $FILE_NAME
 echo '' >> $FILE_NAME
-echo 'hostname: "'$REGISTRATION_ID'"' >> $FILE_NAME
 echo 'connect:' >> $FILE_NAME
 echo '  workload_uri: "unix:///var/run/iotedge/workload.sock"' >> $FILE_NAME
 echo '  management_uri: "unix:///var/run/iotedge/mgmt.sock"' >> $FILE_NAME
