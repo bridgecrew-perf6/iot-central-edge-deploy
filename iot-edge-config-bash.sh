@@ -27,7 +27,7 @@ wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.
 sudo dpkg -i packages-microsoft-prod.deb
 rm packages-microsoft-prod.deb
 sudo apt-get update
-sudo apt-get install iotedge=1.0.9* libiothsm-std=1.0.9*
+sudo apt-get install iotedge libiothsm-std
 echo "Create instance configuration 'config.yaml'."
 
 SCOPE_ID=$1
